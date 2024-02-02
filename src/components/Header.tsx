@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { ModeToggle } from "./theme-toggle"
+import { Button } from "@/components/ui/button"
 const Header = () => {
   return (
     <header className="shadow">
@@ -10,9 +11,12 @@ const Header = () => {
 
         <div className="flex items-center gap-x-4">
            <ModeToggle/>
-            <button>
+           <Button variant="outline"> 
+              <Link href={'/login'}>
                 Login
-            </button>
+              </Link>
+            </Button>
+           
         </div>
        </div>
     </header>
