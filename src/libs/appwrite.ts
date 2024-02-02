@@ -1,4 +1,4 @@
-import { Client, Account } from 'appwrite'
+import { Client, Account, ID } from 'appwrite'
 
 
 
@@ -9,3 +9,5 @@ client
     .setProject('65bd5c9432b61a6032bf');
 
 export const ACCOUNT = new Account(client)
+
+export const UNIQUE_ID = ID.unique()
