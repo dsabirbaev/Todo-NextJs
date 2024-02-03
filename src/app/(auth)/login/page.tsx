@@ -8,6 +8,7 @@ import { ACCOUNT } from "@/lib/appwrite";
 import { useRouter } from 'next/navigation'
 import { useToast } from "@/components/ui/use-toast"
 import { ThreeDots } from 'react-loading-icons'
+import { IUser } from "@/types";
 // export const metadata: Metadata = {
 //   title: "Login | Todo",
 //   description: "Login todo",
@@ -26,7 +27,18 @@ const Login = () => {
   const onSubmit = async() => {  
     setLoading(true);
     try{
+
       await ACCOUNT.createEmailSession(email, password);
+      const response = await ACCOUNT.get(); 
+
+      const infoUser: IUser = {
+        email: response.email,
+        name: response.name,
+				id: response.$id,
+				status: response.status,
+      }
+
+      localStorage.setItem("user", JSON.stringify(infoUser));
       
       toast({
         title: "Logged in",
@@ -34,7 +46,7 @@ const Login = () => {
        
       })
       
-      router.push("/")
+      await router.push("/")
       
     }catch(error){
       toast({
