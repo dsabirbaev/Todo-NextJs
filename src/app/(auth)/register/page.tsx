@@ -3,8 +3,10 @@
 import { useState } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ACCOUNT, UNIQUE_ID } from "@/libs/appwrite";
+import { ACCOUNT, UNIQUE_ID } from "@/lib/appwrite";
 
+import { useRouter } from 'next/navigation'
+import { useToast } from "@/components/ui/use-toast"
 
 
 // export const metadata: Metadata = {
@@ -13,27 +15,36 @@ import { ACCOUNT, UNIQUE_ID } from "@/libs/appwrite";
 // };
 
 const Register = () => {
-
+  
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
+  const { toast } = useToast()
+  const router = useRouter()
+
+  
   const onSubmit = async() => {  
 
-    const info = {
-      name,
-      email,
-      password
-    }
-
     try{
-      const response = await ACCOUNT.create(UNIQUE_ID, email, password, name);
-      console.log(response)
+      await ACCOUNT.create(UNIQUE_ID, email, password, name);
+      
+      toast({
+        title: 'Accounted created',
+				description: 'You can now login with your new account',	
+       
+      })
+      
+      router.push("/login")
+      
     }catch(error){
-      console.log(error)
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      })
     }
 
-    console.log(info)
   }
 
   return (
