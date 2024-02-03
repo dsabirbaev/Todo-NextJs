@@ -7,7 +7,7 @@ import { ACCOUNT, UNIQUE_ID } from "@/lib/appwrite";
 
 import { useRouter } from 'next/navigation'
 import { useToast } from "@/components/ui/use-toast"
-
+import { ThreeDots } from 'react-loading-icons'
 
 // export const metadata: Metadata = {
 //   title: "Register | Todo",
@@ -19,12 +19,15 @@ const Register = () => {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+
 
   const { toast } = useToast()
   const router = useRouter()
 
-  
+
   const onSubmit = async() => {  
+    setLoading(true);
 
     try{
       await ACCOUNT.create(UNIQUE_ID, email, password, name);
@@ -43,6 +46,8 @@ const Register = () => {
         title: "Error",
         description: error.message,
       })
+
+      setLoading(false)
     }
 
   }
@@ -105,7 +110,16 @@ const Register = () => {
               data-ripple-light="true"
               onClick={onSubmit}
             >
-              Register
+              {
+                loading ? (
+                  <div className="flex items-center justify-center ">
+                    <ThreeDots className="w-8 h-5"/>
+                  </div>
+                ) : (
+                  <span>Register</span>
+                )
+              }
+
             </button>
             <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
               Already have an account?

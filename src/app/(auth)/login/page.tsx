@@ -7,7 +7,7 @@ import Link from "next/link";
 import { ACCOUNT } from "@/lib/appwrite";
 import { useRouter } from 'next/navigation'
 import { useToast } from "@/components/ui/use-toast"
-
+import { ThreeDots } from 'react-loading-icons'
 // export const metadata: Metadata = {
 //   title: "Login | Todo",
 //   description: "Login todo",
@@ -17,14 +17,14 @@ const Login = () => {
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [loading, isLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
 
   const { toast } = useToast()
   const router = useRouter()
 
   const onSubmit = async() => {  
-
+    setLoading(true);
     try{
       await ACCOUNT.createEmailSession(email, password);
       
@@ -42,6 +42,8 @@ const Login = () => {
         title: "Error",
         description: error.message,
       })
+
+      setLoading(false)
     }
 
   }
@@ -85,14 +87,25 @@ const Login = () => {
                 </label>
               </div>
             </div>
-           
+
+            
             <button
               className="mt-6 block w-full select-none rounded-lg bg-pink-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
               type="button"
               data-ripple-light="true"
               onClick={onSubmit}
             >
-              Login
+              {
+                loading ? (
+                  <div className="flex items-center justify-center ">
+                    <ThreeDots className="w-8 h-5"/>
+                  </div>
+                ) : (
+                  <span>Login</span>
+                )
+              }
+
+              
             </button>
             <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
               Have not registered yet?
