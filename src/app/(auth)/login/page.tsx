@@ -29,23 +29,11 @@ const Login = () => {
     try{
 
       await ACCOUNT.createEmailSession(email, password);
-      const response = await ACCOUNT.get(); 
-
-      const infoUser: IUser = {
-        email: response.email,
-        name: response.name,
-				id: response.$id,
-				status: response.status,
-      }
-
-      localStorage.setItem("user", JSON.stringify(infoUser));
-      
       toast({
         title: "Logged in",
 				description: "You are now logged in"
        
       })
-      
       await router.push("/")
       
     }catch(error: any){

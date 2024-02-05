@@ -1,12 +1,13 @@
 "use client"
 
-
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { ModeToggle } from "./theme-toggle"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useRouter } from 'next/navigation'
 import { ACCOUNT } from "@/lib/appwrite"
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,16 +18,30 @@ import {
 
 const Header = () => {
 
-  const { name } = JSON.parse(localStorage.getItem("user")) || { name: null };
+  const [name, setName] = useState('');
+ 
   const router = useRouter()
 
   const logout = async () => {
 
     await ACCOUNT.deleteSession('current')
-    localStorage.clear();
+    
     router.push('/login')
    
   }
+
+  const getData = async() => {
+    try{  
+      const response = await ACCOUNT.get('current');
+      setName(response.name)
+    }catch(error){
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getData();
+  }, [])
 
   return (
 
