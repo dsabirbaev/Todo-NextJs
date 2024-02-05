@@ -48,7 +48,7 @@ const Login = () => {
       
       await router.push("/")
       
-    }catch(error){
+    }catch(error: any){
       toast({
         variant: "destructive",
         title: "Error",

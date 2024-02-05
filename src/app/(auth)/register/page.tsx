@@ -40,7 +40,7 @@ const Register = () => {
       
       router.push("/login")
       
-    }catch(error){
+    }catch(error: any){
       toast({
         variant: "destructive",
         title: "Error",

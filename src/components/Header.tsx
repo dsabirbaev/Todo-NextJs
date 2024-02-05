@@ -17,7 +17,7 @@ import {
 
 const Header = () => {
 
-  const { email, name} = JSON.parse(localStorage.getItem("user"));
+  const { name } = JSON.parse(localStorage.getItem("user")) || { name: null };
   const router = useRouter()
 
   const logout = async () => {
