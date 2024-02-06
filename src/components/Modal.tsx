@@ -14,12 +14,14 @@ import {
 } from "@/components/ui/dialog"
 
 import { FaPencil } from "react-icons/fa6";
+import { useToast } from "@/components/ui/use-toast";
+
 
 const Modal = ({id}) => {
 
   const[text, setText] = useState("");
 
-
+  const { toast } = useToast()
   const editTodo = async(id) => {
 
     const data ={
@@ -29,9 +31,17 @@ const Modal = ({id}) => {
       const response = await DATABASE.updateDocument(DB_ID, COLLECTION_ID, id, data)
       console.log(response)
       
-      
+      toast({
+        title: "Updated todo",
+				description: "Todo was updated successfully"
+       
+      })
     }catch(error){
-      console.log(error)
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      })
     }
   }
 
@@ -39,7 +49,7 @@ const Modal = ({id}) => {
     <Dialog>
       
       <DialogTrigger asChild>
-        <Button className="bg-blue-800 hover:bg-transparent hover:text-blue-800"><FaPencil /></Button>
+        <Button className="bg-blue-800 hover:bg-transparent hover:text-blue-800"><FaPencil className="dark:text-white"/></Button>
       </DialogTrigger>
 
 

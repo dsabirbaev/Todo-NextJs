@@ -9,6 +9,7 @@ import { Query } from "appwrite";
 import { useToast } from "@/components/ui/use-toast"
 
 
+
 export default function Home() {
 
   const[todoText, setTodoText] = useState<String>("");
@@ -113,8 +114,8 @@ export default function Home() {
 
               <div className="border rounded-md border-pink-300 w-[700px] p-2 flex flex-col gap-y-5">
               {
-                todos?.map((item) => (
-                    <Todo data={item} key={item?.$id} deleteTodo={deleteTodo}/>
+                [... todos].reverse().map((item, index) => (
+                    <Todo data={item} index={index+1} key={item?.$id} deleteTodo={deleteTodo}/>
                 ))
               }
                
