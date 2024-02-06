@@ -18,6 +18,7 @@ export default function Home() {
       const response = await ACCOUNT.get('current');
       setEmail(response.email)
       localStorage.setItem("email", response.email);
+      getTodo()
     }catch(error){
       console.log(error)
     }
@@ -45,7 +46,7 @@ export default function Home() {
 
     try{
       const response = await DATABASE.listDocuments(DB_ID, COLLECTION_ID, [
-        Query.equal('email', localStorage.getItem("email"))
+        Query.equal('email', String(localStorage.getItem("email")))
 
       ]);
       setTodos(response.documents);
@@ -55,24 +56,18 @@ export default function Home() {
     }
   }
  
+  const deleteTodo = async(id) => {
+    try{
+      const response = await DATABASE.deleteDocument(DB_ID, COLLECTION_ID, id)
+      console.log(response)
+    }catch(error){
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // console.log("Fetching data...");
-        await getData();
-        // console.log("Email:", email);
-        await getTodo();
-        // console.log("Todo data:", todos);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-  
-    fetchData();
+    getData();
   }, [])
-
-
 
   return (
     <section className="min-h-screen my-5">
@@ -90,7 +85,7 @@ export default function Home() {
               <div className="border rounded-md border-pink-300 w-[700px] p-2 flex flex-col gap-y-5">
               {
                 todos?.map((item) => (
-                    <Todo data={item} key={item?.$id}/>
+                    <Todo data={item} key={item?.$id} deleteTodo={deleteTodo}/>
                 ))
               }
                
