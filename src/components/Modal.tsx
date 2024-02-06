@@ -3,8 +3,8 @@
 
 import { useState } from "react"
 import { DATABASE, DB_ID, COLLECTION_ID } from "@/lib/appwrite";
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -19,16 +19,16 @@ const Modal = ({id}) => {
 
   const[text, setText] = useState("");
 
-  
+
   const editTodo = async(id) => {
 
     const data ={
       text: text
     }
-  
     try{
       const response = await DATABASE.updateDocument(DB_ID, COLLECTION_ID, id, data)
       console.log(response)
+      
       
     }catch(error){
       console.log(error)

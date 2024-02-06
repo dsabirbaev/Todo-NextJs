@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ACCOUNT, DATABASE, DB_ID, COLLECTION_ID, UNIQUE_ID } from "@/lib/appwrite"
 import Todo from "@/components/Todo";
 import { Query } from "appwrite";
-import Modal from "@/components/Modal";
+
 export default function Home() {
 
   const[todoText, setTodoText] = useState<String>("");
@@ -34,15 +34,12 @@ export default function Home() {
     try{
       const response = await DATABASE.createDocument( DB_ID, COLLECTION_ID, UNIQUE_ID, data);
       getData();
-
       setTodoText("");
     
     }catch(error){
       console.log(error)
     }
   }
-
-
 
   
   const getTodo = async(data) => {
