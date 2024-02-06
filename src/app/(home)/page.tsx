@@ -6,12 +6,17 @@ import { Button } from "@/components/ui/button"
 import { ACCOUNT, DATABASE, DB_ID, COLLECTION_ID, UNIQUE_ID } from "@/lib/appwrite"
 import Todo from "@/components/Todo";
 import { Query } from "appwrite";
+import { useToast } from "@/components/ui/use-toast"
+
 
 export default function Home() {
 
   const[todoText, setTodoText] = useState<String>("");
   const[email, setEmail] = useState("");
   const[todos, setTodos] = useState([]);
+
+
+  const { toast } = useToast()
 
   const getData = async() => {
     try{  
@@ -32,12 +37,22 @@ export default function Home() {
     }
    
     try{
-      const response = await DATABASE.createDocument( DB_ID, COLLECTION_ID, UNIQUE_ID, data);
+      await DATABASE.createDocument( DB_ID, COLLECTION_ID, UNIQUE_ID, data);
+
+      toast({
+        title: "Added todo",
+				description: "Todo was added successfully"
+       
+      })
       getData();
       setTodoText("");
     
     }catch(error){
-      console.log(error)
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      })
     }
   }
 
@@ -58,11 +73,21 @@ export default function Home() {
  
   const deleteTodo = async(id) => {
     try{
-      const response = await DATABASE.deleteDocument(DB_ID, COLLECTION_ID, id)
-      console.log(response)
+      await DATABASE.deleteDocument(DB_ID, COLLECTION_ID, id)
+      
+      toast({
+        title: "Deleted todo",
+				description: "Todo was deleted successfully"
+       
+      })
+
       getData();
-    }catch(error){
-      console.log(error)
+    }catch(error: any){
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      })
     }
   }
 
