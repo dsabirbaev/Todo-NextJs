@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ACCOUNT, DATABASE, DB_ID, COLLECTION_ID, UNIQUE_ID } from "@/lib/appwrite"
 import Todo from "@/components/Todo";
 import { Query } from "appwrite";
-
+import Modal from "@/components/Modal";
 export default function Home() {
 
   const[todoText, setTodoText] = useState<String>("");
@@ -17,23 +17,26 @@ export default function Home() {
     try{  
       const response = await ACCOUNT.get('current');
       setEmail(response.email)
-      localStorage.setItem("email", response.email);
-      getTodo()
+      // localStorage.setItem("email", response.email);
+      getTodo(response.email)
     }catch(error){
       console.log(error)
     }
   }
 
   const onSubmit = async() => {
+   
     const data = {
       text: todoText,
       email: email,
     }
+   
     try{
       const response = await DATABASE.createDocument( DB_ID, COLLECTION_ID, UNIQUE_ID, data);
-      getTodo()
+      getData();
 
       setTodoText("");
+    
     }catch(error){
       console.log(error)
     }
@@ -42,11 +45,11 @@ export default function Home() {
 
 
   
-  const getTodo = async() => {
+  const getTodo = async(data) => {
 
     try{
       const response = await DATABASE.listDocuments(DB_ID, COLLECTION_ID, [
-        Query.equal('email', String(localStorage.getItem("email")))
+        Query.equal('email', data)
 
       ]);
       setTodos(response.documents);
@@ -60,13 +63,17 @@ export default function Home() {
     try{
       const response = await DATABASE.deleteDocument(DB_ID, COLLECTION_ID, id)
       console.log(response)
+      getData();
     }catch(error){
       console.log(error)
     }
   }
 
+  
+
   useEffect(() => {
     getData();
+
   }, [])
 
   return (
@@ -89,8 +96,11 @@ export default function Home() {
                 ))
               }
                
-                
+               
               </div>
+
+            
+              
             </div>
           </div>
       </div>
