@@ -23,11 +23,9 @@ const Header = () => {
   const router = useRouter()
 
   const logout = async () => {
-
     await ACCOUNT.deleteSession('current')
-    
     router.push('/login')
-   
+    localStorage.clear();
   }
 
   const getData = async() => {

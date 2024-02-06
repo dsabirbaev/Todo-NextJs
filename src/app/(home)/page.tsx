@@ -1,25 +1,78 @@
 
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button"
+import { ACCOUNT, DATABASE, DB_ID, COLLECTION_ID, UNIQUE_ID } from "@/lib/appwrite"
 import Todo from "@/components/Todo";
+import { Query } from "appwrite";
 
 export default function Home() {
 
   const[todoText, setTodoText] = useState<String>("");
-  
-  
-  
+  const[email, setEmail] = useState("");
+  const[todos, setTodos] = useState([]);
 
-  const onSubmit = () => {
+  const getData = async() => {
+    try{  
+      const response = await ACCOUNT.get('current');
+      setEmail(response.email)
+      localStorage.setItem("email", response.email);
+    }catch(error){
+      console.log(error)
+    }
+  }
 
+  const onSubmit = async() => {
+    const data = {
+      text: todoText,
+      email: email,
+    }
+    try{
+      const response = await DATABASE.createDocument( DB_ID, COLLECTION_ID, UNIQUE_ID, data);
+      getTodo()
 
-    
+      setTodoText("");
+    }catch(error){
+      console.log(error)
+    }
   }
 
 
+
+  
+  const getTodo = async() => {
+
+    try{
+      const response = await DATABASE.listDocuments(DB_ID, COLLECTION_ID, [
+        Query.equal('email', localStorage.getItem("email"))
+
+      ]);
+      setTodos(response.documents);
+     
+    }catch(error){
+      console.log(error)
+    }
+  }
  
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // console.log("Fetching data...");
+        await getData();
+        // console.log("Email:", email);
+        await getTodo();
+        // console.log("Todo data:", todos);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+  
+    fetchData();
+  }, [])
+
+
 
   return (
     <section className="min-h-screen my-5">
@@ -35,8 +88,12 @@ export default function Home() {
              </div>
 
               <div className="border rounded-md border-pink-300 w-[700px] p-2 flex flex-col gap-y-5">
+              {
+                todos?.map((item) => (
+                    <Todo data={item} key={item?.$id}/>
+                ))
+              }
                
-               <Todo />
                 
               </div>
             </div>
