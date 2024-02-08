@@ -1,4 +1,5 @@
 
+import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 
 
@@ -6,7 +7,13 @@ import { Poppins } from "next/font/google";
 const poppins = Poppins({ subsets: ["latin"], weight: "400" });
 
 
-export default function AuthLayout({
+export const metadata: Metadata = {
+    title: "Login | Todo",
+    description: "Register todo",
+};
+  
+
+export default function RegisterLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

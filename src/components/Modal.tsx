@@ -2,7 +2,7 @@
 
 
 import { useState } from "react"
-import { DATABASE, DB_ID, COLLECTION_ID } from "@/lib/appwrite";
+import { DATABASE, DB_ID, COLLECTION_TODOS_ID } from "@/lib/appwrite";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -28,7 +28,7 @@ const Modal = ({id}) => {
       text: text
     }
     try{
-      const response = await DATABASE.updateDocument(DB_ID, COLLECTION_ID, id, data)
+      const response = await DATABASE.updateDocument(DB_ID, COLLECTION_TODOS_ID, id, data)
       console.log(response)
       
       toast({

@@ -3,14 +3,14 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button"
-import { ACCOUNT, DATABASE, DB_ID, COLLECTION_ID, UNIQUE_ID } from "@/lib/appwrite"
+import { ACCOUNT, DATABASE, DB_ID, COLLECTION_TODOS_ID, UNIQUE_ID } from "@/lib/appwrite"
 import Todo from "@/components/Todo";
 import { Query } from "appwrite";
 import { useToast } from "@/components/ui/use-toast"
 
 
 
-export default function Home() {
+const Home = () => {
 
   const[todoText, setTodoText] = useState<String>("");
   const[email, setEmail] = useState("");
@@ -21,7 +21,7 @@ export default function Home() {
 
   const getData = async() => {
     try{  
-      const response = await ACCOUNT.get('current');
+      const response = await ACCOUNT.get();
       setEmail(response.email)
       // localStorage.setItem("email", response.email);
       getTodo(response.email)
@@ -38,7 +38,7 @@ export default function Home() {
     }
    
     try{
-      await DATABASE.createDocument( DB_ID, COLLECTION_ID, UNIQUE_ID, data);
+      await DATABASE.createDocument( DB_ID, COLLECTION_TODOS_ID, UNIQUE_ID, data);
 
       toast({
         title: "Added todo",
@@ -61,7 +61,7 @@ export default function Home() {
   const getTodo = async(data) => {
 
     try{
-      const response = await DATABASE.listDocuments(DB_ID, COLLECTION_ID, [
+      const response = await DATABASE.listDocuments(DB_ID, COLLECTION_TODOS_ID, [
         Query.equal('email', data)
 
       ]);
@@ -74,7 +74,7 @@ export default function Home() {
  
   const deleteTodo = async(id) => {
     try{
-      await DATABASE.deleteDocument(DB_ID, COLLECTION_ID, id)
+      await DATABASE.deleteDocument(DB_ID, COLLECTION_TODOS_ID, id)
       
       toast({
         title: "Deleted todo",
@@ -130,3 +130,6 @@ export default function Home() {
     </section>
   );
 }
+
+
+export default Home;

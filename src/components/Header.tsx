@@ -28,9 +28,11 @@ const Header = () => {
     localStorage.clear();
   }
 
+  
+
   const getData = async() => {
     try{  
-      const response = await ACCOUNT.get('current');
+      const response = await ACCOUNT.get();
       setName(response.name)
     }catch(error){
       console.log(error)
@@ -38,7 +40,7 @@ const Header = () => {
   }
 
   useEffect(() => {
-    getData();
+   getData();
   }, [])
 
   return (

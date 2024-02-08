@@ -1,18 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import type { Metadata } from "next";
+
 import Link from "next/link";
-import { ACCOUNT, UNIQUE_ID } from "@/lib/appwrite";
+import { ACCOUNT,  UNIQUE_ID } from "@/lib/appwrite";
 
 import { useRouter } from 'next/navigation'
 import { useToast } from "@/components/ui/use-toast"
 import { ThreeDots } from 'react-loading-icons'
 
-// export const metadata: Metadata = {
-//   title: "Register | Todo",
-//   description: "Register todo",
-// };
 
 const Register = () => {
   
@@ -30,17 +26,22 @@ const Register = () => {
     setLoading(true);
 
     try{
-      await ACCOUNT.create(UNIQUE_ID, email, password, name);
+      const res = await ACCOUNT.create(UNIQUE_ID, email, password, name);
       
       toast({
         title: 'Accounted created',
 				description: 'You can now login with your new account',	
        
       })
-      
+
+      const data = {
+        email: email
+      }
+
+
       router.push("/login")
-      
     }catch(error: any){
+
       toast({
         variant: "destructive",
         title: "Error",
