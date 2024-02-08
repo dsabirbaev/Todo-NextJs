@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { ACCOUNT, STORAGE_ID, STORAGE, UNIQUE_ID, DATABASE, COLLECTION_USERS_ID, DB_ID } from "@/lib/appwrite"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Query } from "appwrite";
-
+import { useToast } from "@/components/ui/use-toast"
 
 const Profile = () => {
   const[name, setName] = useState<String>('');
@@ -16,7 +16,8 @@ const Profile = () => {
   const[userData, setUserData] = useState([]);
   const[userId, setUserId] = useState('');
   
-  
+  const { toast } = useToast()
+ 
 
 
   const getData = async() => {
@@ -25,7 +26,6 @@ const Profile = () => {
       const response = await ACCOUNT.get();
       setName(response.name)
       setEmail(response.email)
-      // console.log(response)
       getUserData(response.email)
     }catch(error){
       console.log(error)
@@ -34,12 +34,10 @@ const Profile = () => {
 
   const sendFile = async() => {
    
-
     try{
       const response = await STORAGE.createFile(STORAGE_ID, UNIQUE_ID, pic);
       const res = await STORAGE.getFilePreview(STORAGE_ID, response.$id);
       
-
       const data = {
         email: email,
         avatar_url: res
@@ -47,12 +45,20 @@ const Profile = () => {
 
       const x = await DATABASE.createDocument( DB_ID, COLLECTION_USERS_ID, UNIQUE_ID, data);
 
-      console.log(x)
-
       getData();
 
+      toast({
+        title: "Image uploaded",
+				description: "Image uploaded successfully"
+       
+      })
+
     }catch(error){
-      console.log(error)
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error?.message,
+      })
     }
 
    
@@ -89,12 +95,23 @@ const Profile = () => {
       }
       const x = await DATABASE.updateDocument( DB_ID, COLLECTION_USERS_ID, userId, data);
 
-      console.log(x)
+
+      toast({
+        title: "Image updated",
+				description: "Image updated successfully"
+       
+      })
 
       getData();
 
+     
+
     }catch(error){
-      console.log(error)
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message,
+      })
     }
   }
 
