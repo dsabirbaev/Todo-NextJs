@@ -1,4 +1,4 @@
-import { COLLECTION_ID } from '@/lib/appwrite';
+
 import { Account, Client, Databases, ID, Storage } from 'appwrite'
 
 

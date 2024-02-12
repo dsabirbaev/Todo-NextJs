@@ -133,7 +133,7 @@ const Profile = () => {
   useEffect(() => {
     getData();
     
-  }, [])
+  })
   
 
   

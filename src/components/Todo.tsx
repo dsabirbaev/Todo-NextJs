@@ -1,10 +1,21 @@
 
-import { Button } from "@/components/ui/button"
+
+import { FC } from "react";
+import { Button } from "@/components/ui/button";
 import { FaRegTrashCan } from "react-icons/fa6";
 
 import Modal from "./Modal";
 
-const Todo = ({ data: { text, $id }, deleteTodo, index }) => {
+interface IProps {
+  text: string;
+  $id: string;
+  deleteTodo: (id: string) => void;
+  index: number;
+}
+
+
+
+const Todo: FC<IProps> = ({ text, $id, deleteTodo, index }) => {
 
 
   return (

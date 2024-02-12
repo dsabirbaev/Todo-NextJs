@@ -107,7 +107,7 @@ const Home = () => {
   useEffect(() => {
     getData();
 
-  }, [])
+  })
 
   return (
     <section className="min-h-screen my-5">
@@ -125,7 +125,7 @@ const Home = () => {
               <div className="border rounded-md border-pink-300 w-[700px] p-2 flex flex-col gap-y-5">
               {
                 [... todos].reverse().map((item, index) => (
-                    <Todo data={item} index={index+1} key={item?.$id} deleteTodo={deleteTodo}/>
+                    <Todo text={item.text} $id={item.$id} index={index+1} key={item?.$id} deleteTodo={deleteTodo}/>
                 ))
               }
                
