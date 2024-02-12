@@ -18,3 +18,9 @@ export interface ITodo {
     email: string;
     $id: string;   
 }
+
+export interface IProfile {
+    avatar_url: string;
+    email: string,
+    $id: string
+}

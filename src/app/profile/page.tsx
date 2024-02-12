@@ -8,13 +8,13 @@ import { ACCOUNT, STORAGE_ID, STORAGE, UNIQUE_ID, DATABASE, COLLECTION_USERS_ID,
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Query } from "appwrite";
 import { useToast } from "@/components/ui/use-toast"
-import { setFips } from "crypto"
+import { IProfile } from "@/types"
 
 const Profile = () => {
   const[name, setName] = useState<string>('');
   const[email, setEmail] = useState<string>('');
-  const[pic, setPic] = useState< any>();
-  const[userData, setUserData] = useState([]);
+  const[pic, setPic] = useState<any>();
+  const[userData, setUserData] = useState<IProfile[]>([]);
   const[userId, setUserId] = useState<string>('');
   
   const { toast } = useToast()
@@ -74,14 +74,21 @@ const Profile = () => {
  
   
 
-  const getUserData = async(data) => {
+  const getUserData = async(data: string) => {
 
     try{
       const response = await DATABASE.listDocuments(DB_ID, COLLECTION_USERS_ID, [
         Query.equal('email', data)
       ]);
+      const res = response.documents.map((item) => {
+        return {
+          avatar_url: item.avatar_url,
+          email: item.email,
+          $id: item.$id,
+        };
+      });
       
-      setUserData(response.documents)
+      setUserData(res)
       response.documents.map(item => setUserId(item.$id))
     }catch(error: any){
       console.log(error)

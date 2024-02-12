@@ -17,6 +17,7 @@ import { FaPencil } from "react-icons/fa6";
 import { useToast } from "@/components/ui/use-toast";
 
 
+
 const Modal = ({id}) => {
 
   const[text, setText] = useState("");

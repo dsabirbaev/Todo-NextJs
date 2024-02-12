@@ -76,7 +76,7 @@ const Home = () => {
       });
 
       setTodos(res);
-      console.log(response.documents)
+     
     }catch(error){
       console.log(error)
     }
