@@ -24,3 +24,7 @@ export interface IProfile {
     email: string,
     $id: string
 }
+
+export interface IModal {
+    id: string
+}

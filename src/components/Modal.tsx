@@ -1,7 +1,7 @@
 "use client";
 
 
-import { useState } from "react"
+import { useState, FC } from "react"
 import { DATABASE, DB_ID, COLLECTION_TODOS_ID } from "@/lib/appwrite";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,15 +15,14 @@ import {
 
 import { FaPencil } from "react-icons/fa6";
 import { useToast } from "@/components/ui/use-toast";
+import { IModal } from "@/types";
 
-
-
-const Modal = ({id}) => {
+const Modal: FC<IModal> = ({ id }) => {
 
   const[text, setText] = useState("");
 
   const { toast } = useToast()
-  const editTodo = async(id) => {
+  const editTodo = async(id: string): Promise<void> => {
 
     const data ={
       text: text
