@@ -36,7 +36,7 @@ const Modal = ({id}) => {
 				description: "Todo was updated successfully"
        
       })
-    }catch(error){
+    }catch(error: any){
       toast({
         variant: "destructive",
         title: "Error",

@@ -7,14 +7,17 @@ import { ACCOUNT, DATABASE, DB_ID, COLLECTION_TODOS_ID, UNIQUE_ID } from "@/lib/
 import Todo from "@/components/Todo";
 import { Query } from "appwrite";
 import { useToast } from "@/components/ui/use-toast"
-
+import { IData, ITodo } from "@/types";
 
 
 const Home = () => {
 
-  const[todoText, setTodoText] = useState<String>("");
-  const[email, setEmail] = useState("");
-  const[todos, setTodos] = useState([]);
+  
+  
+
+  const[todoText, setTodoText] = useState<string>("");
+  const[email, setEmail] = useState<string>("");
+  const[todos, setTodos] = useState<ITodo[]>([]);
 
 
   const { toast } = useToast()
@@ -23,16 +26,15 @@ const Home = () => {
     try{  
       const response = await ACCOUNT.get();
       setEmail(response.email)
-      // localStorage.setItem("email", response.email);
       getTodo(response.email)
-    }catch(error){
+    }catch(error: any){
       console.log(error)
     }
   }
 
   const onSubmit = async() => {
    
-    const data = {
+    const data: IData = {
       text: todoText,
       email: email,
     }
@@ -48,7 +50,7 @@ const Home = () => {
       getData();
       setTodoText("");
     
-    }catch(error){
+    }catch(error: any){
       toast({
         variant: "destructive",
         title: "Error",
@@ -58,21 +60,29 @@ const Home = () => {
   }
 
   
-  const getTodo = async(data) => {
+  const getTodo = async(data: string) => {
 
     try{
       const response = await DATABASE.listDocuments(DB_ID, COLLECTION_TODOS_ID, [
         Query.equal('email', data)
-
       ]);
-      setTodos(response.documents);
-     
+      
+      const res = response.documents.map((item) => {
+        return {
+          text: item.text,
+          email: item.email,
+          $id: item.$id,
+        };
+      });
+
+      setTodos(res);
+      console.log(response.documents)
     }catch(error){
       console.log(error)
     }
   }
  
-  const deleteTodo = async(id) => {
+  const deleteTodo = async(id: string) => {
     try{
       await DATABASE.deleteDocument(DB_ID, COLLECTION_TODOS_ID, id)
       

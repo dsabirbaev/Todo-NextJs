@@ -8,17 +8,27 @@ import { ACCOUNT, STORAGE_ID, STORAGE, UNIQUE_ID, DATABASE, COLLECTION_USERS_ID,
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Query } from "appwrite";
 import { useToast } from "@/components/ui/use-toast"
+import { setFips } from "crypto"
 
 const Profile = () => {
-  const[name, setName] = useState<String>('');
-  const[email, setEmail] = useState<String>('');
-  const[pic, setPic] = useState('');
+  const[name, setName] = useState<string>('');
+  const[email, setEmail] = useState<string>('');
+  const[pic, setPic] = useState< any>();
   const[userData, setUserData] = useState([]);
-  const[userId, setUserId] = useState('');
+  const[userId, setUserId] = useState<string>('');
   
   const { toast } = useToast()
  
+  const handleCahange = (e: React.FormEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement;
 
+    if (target.files && target.files.length > 0) {
+      setPic(target.files[0]);
+    } else {
+      setPic(undefined);
+    }
+   
+  };
 
   const getData = async() => {
 
@@ -27,7 +37,7 @@ const Profile = () => {
       setName(response.name)
       setEmail(response.email)
       getUserData(response.email)
-    }catch(error){
+    }catch(error: unknown){
       console.log(error)
     }
   }
@@ -42,18 +52,16 @@ const Profile = () => {
         email: email,
         avatar_url: res
       }
-
-      const x = await DATABASE.createDocument( DB_ID, COLLECTION_USERS_ID, UNIQUE_ID, data);
-
-      getData();
-
+      await DATABASE.createDocument( DB_ID, COLLECTION_USERS_ID, UNIQUE_ID, data);
+     
       toast({
         title: "Image uploaded",
 				description: "Image uploaded successfully"
        
       })
+      getData();
 
-    }catch(error){
+    }catch(error: any){
       toast({
         variant: "destructive",
         title: "Error",
@@ -75,7 +83,7 @@ const Profile = () => {
       
       setUserData(response.documents)
       response.documents.map(item => setUserId(item.$id))
-    }catch(error){
+    }catch(error: any){
       console.log(error)
     }
   }
@@ -106,7 +114,7 @@ const Profile = () => {
 
      
 
-    }catch(error){
+    }catch(error: any){
       toast({
         variant: "destructive",
         title: "Error",
@@ -154,7 +162,7 @@ const Profile = () => {
           }
                
        <div>
-          <Input className="mb-2" id="picture" type="file"  onChange={(e) => setPic(e.target.files[0])}/>
+          <Input className="mb-2" id="picture" type="file"  onChange={(e) => handleCahange(e)}/>
           <div className="flex gap-x-2">
           {
             userId ? <Button onClick={updateUserData}>Update</Button> : <Button onClick={sendFile}>Upload</Button>  

@@ -34,11 +34,7 @@ const Register = () => {
        
       })
 
-      const data = {
-        email: email
-      }
-
-
+    
       router.push("/login")
     }catch(error: any){
 
