@@ -8,7 +8,7 @@ import { ACCOUNT } from "@/lib/appwrite";
 import { useRouter } from 'next/navigation'
 import { useToast } from "@/components/ui/use-toast"
 import { ThreeDots } from 'react-loading-icons'
-import { IUser } from "@/types";
+
 
 
 const Login = () => {
@@ -32,7 +32,7 @@ const Login = () => {
        
       })
       await router.push("/")
-      
+      setLoading(false)
     }catch(error: any){
       toast({
         variant: "destructive",

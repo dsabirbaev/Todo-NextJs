@@ -8,7 +8,7 @@ import Todo from "@/components/Todo";
 import { Query } from "appwrite";
 import { useToast } from "@/components/ui/use-toast"
 import { IData, ITodo } from "@/types";
-
+import { TailSpin, Bars } from 'react-loading-icons'
 
 const Home = () => {
 
@@ -18,22 +18,27 @@ const Home = () => {
   const[todoText, setTodoText] = useState<string>("");
   const[email, setEmail] = useState<string>("");
   const[todos, setTodos] = useState<ITodo[]>([]);
-
+  const[loadingAddTodo, setLoadingAddTodo] = useState<boolean>(false);
+  const[loadingData, setLoadingData] = useState<boolean>(false);
 
   const { toast } = useToast()
 
   const getData = async() => {
+    setLoadingData(true)
     try{  
       const response = await ACCOUNT.get();
+      setLoadingData(false)
       setEmail(response.email)
       getTodo(response.email)
+      
     }catch(error: any){
       console.log(error)
+      setLoadingData(false)
     }
   }
 
   const onSubmit = async() => {
-   
+    setLoadingAddTodo(true)
     const data: IData = {
       text: todoText,
       email: email,
@@ -49,13 +54,15 @@ const Home = () => {
       })
       getData();
       setTodoText("");
-    
+      setLoadingAddTodo(false)
     }catch(error: any){
       toast({
         variant: "destructive",
         title: "Error",
         description: error.message,
       })
+
+      setLoadingAddTodo(false)
     }
   }
 
@@ -102,12 +109,11 @@ const Home = () => {
     }
   }
 
-  
 
   useEffect(() => {
     getData();
 
-  })
+  }, [])
 
   return (
     <section className="min-h-screen my-5">
@@ -119,21 +125,37 @@ const Home = () => {
              <div className="flex items-center gap-x-5 mb-5">
 
                 <input value={todoText} onChange={(e) => setTodoText(e.target.value)} type="text" placeholder="Add todo" className="border p-2 rounded-lg w-[500px]"/>
-                <Button onClick={onSubmit} className="p-5">Add</Button>
+                <Button onClick={onSubmit} className="p-5">
+                  {
+                    loadingAddTodo ? (
+                      <div className="flex items-center justify-center ">
+                     
+                        <TailSpin className="w-8 h-5"/>
+                      </div>
+                    ) : (
+                      <span>Add</span>
+                    )
+                  }
+
+                </Button>
              </div>
-
-              <div className="border rounded-md border-pink-300 w-[700px] p-2 flex flex-col gap-y-5">
-              {
-                [... todos].reverse().map((item, index) => (
-                    <Todo text={item.text} $id={item.$id} index={index+1} key={item?.$id} deleteTodo={deleteTodo}/>
-                ))
-              }
-               
-               
-              </div>
-
-            
-              
+  
+                {
+                  loadingData ? (
+                    <div className="bg-slate-100 w-full h-[50vh] flex items-center justify-center">
+                       <Bars className="w-20 h-20" />
+                    </div>
+                  ):
+                  (
+                    <div className="border rounded-md border-pink-300 w-[700px] p-2 flex flex-col gap-y-5">
+                      {
+                        [... todos].reverse().map((item, index) => (
+                          <Todo text={item.text} $id={item.$id} index={index+1} key={item?.$id} deleteTodo={deleteTodo}/>
+                        ))
+                      }
+                    </div>
+                  )
+                }
             </div>
           </div>
       </div>
