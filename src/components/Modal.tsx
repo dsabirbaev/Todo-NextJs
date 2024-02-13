@@ -16,32 +16,35 @@ import {
 import { FaPencil } from "react-icons/fa6";
 import { useToast } from "@/components/ui/use-toast";
 import { IModal } from "@/types";
+import { TailSpin } from 'react-loading-icons';
 
 const Modal: FC<IModal> = ({ id }) => {
 
   const[text, setText] = useState("");
-
+  const [loadingEdit, setLoadingEdit] = useState<boolean>(false);
   const { toast } = useToast()
-  const editTodo = async(id: string): Promise<void> => {
 
+  const editTodo = async(id: string): Promise<void> => {
+    setLoadingEdit(true);
     const data ={
       text: text
     }
     try{
       const response = await DATABASE.updateDocument(DB_ID, COLLECTION_TODOS_ID, id, data)
-      console.log(response)
-      
+
       toast({
         title: "Updated todo",
 				description: "Todo was updated successfully"
        
       })
+      setLoadingEdit(false);
     }catch(error: any){
       toast({
         variant: "destructive",
         title: "Error",
         description: error.message,
       })
+      setLoadingEdit(false);
     }
   }
 
@@ -60,9 +63,24 @@ const Modal: FC<IModal> = ({ id }) => {
 
         
         <DialogFooter>
-          <DialogClose >
-            <Button onClick={() => editTodo(id)} type="submit">Edit</Button>
-          </DialogClose>
+          {
+            loadingEdit ? (
+              <Button onClick={() => editTodo(id)} type="submit">
+               
+                <div className="flex items-center justify-center "> 
+                  <TailSpin className="w-8 h-5"/>
+                </div>
+                 
+              </Button>
+            ): (
+              <DialogClose >
+                <Button onClick={() => editTodo(id)} type="submit">
+                  Edit
+                </Button>
+              </DialogClose>
+            )
+          }
+          
           
         </DialogFooter>
       </DialogContent>
