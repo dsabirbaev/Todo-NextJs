@@ -63,26 +63,22 @@ const Modal: FC<IModal> = ({ id }) => {
 
         
         <DialogFooter>
-          {
-            loadingEdit ? (
-              <Button onClick={() => editTodo(id)} type="submit">
-               
-                <div className="flex items-center justify-center "> 
-                  <TailSpin className="w-8 h-5"/>
-                </div>
-                 
-              </Button>
-            ): (
-              <DialogClose >
-                <Button onClick={() => editTodo(id)} type="submit">
-                  Edit
-                </Button>
-              </DialogClose>
-            )
-          }
-          
-          
+          <DialogClose >
+            <Button onClick={() => editTodo(id)} type="submit">
+              {
+                loadingEdit ? (
+                  <div className="flex items-center justify-center "> 
+                    <TailSpin className="w-8 h-5"/>
+                  </div>
+                ):
+                (
+                  <span>Edit</span>
+                )
+              }
+            </Button>
+          </DialogClose>
         </DialogFooter>
+        
       </DialogContent>
     </Dialog>
   )
