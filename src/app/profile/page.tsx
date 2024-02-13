@@ -9,14 +9,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Query } from "appwrite";
 import { useToast } from "@/components/ui/use-toast"
 import { IProfile } from "@/types"
-
+import { Oval, TailSpin } from 'react-loading-icons'
 const Profile = () => {
   const[name, setName] = useState<string>('');
   const[email, setEmail] = useState<string>('');
   const[pic, setPic] = useState<any>();
   const[userData, setUserData] = useState<IProfile[]>([]);
   const[userId, setUserId] = useState<string>('');
-  
+  const[loadingData, setLoadingData] = useState<boolean>(false);
+  const[loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
   const { toast } = useToast()
  
   const handleCahange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -31,19 +32,21 @@ const Profile = () => {
   };
 
   const getData = async() => {
-
+    setLoadingData(true)
     try{
       const response = await ACCOUNT.get();
       setName(response.name)
       setEmail(response.email)
       getUserData(response.email)
-    }catch(error: unknown){
+      setLoadingData(false)
+    }catch(error: any){
       console.log(error)
+      setLoadingData(false)
     }
   }
 
   const sendFile = async() => {
-   
+    setLoadingUpdate(true)
     try{
       const response = await STORAGE.createFile(STORAGE_ID, UNIQUE_ID, pic);
       const res = await STORAGE.getFilePreview(STORAGE_ID, response.$id);
@@ -60,13 +63,14 @@ const Profile = () => {
        
       })
       getData();
-
+      setLoadingUpdate(false)
     }catch(error: any){
       toast({
         variant: "destructive",
         title: "Error",
         description: error?.message,
       })
+      setLoadingUpdate(false)
     }
 
    
@@ -98,7 +102,7 @@ const Profile = () => {
 
 
   const updateUserData = async() => {
-   
+    setLoadingUpdate(true)
     try{
 
       const response = await STORAGE.createFile(STORAGE_ID, UNIQUE_ID, pic);
@@ -116,24 +120,22 @@ const Profile = () => {
 				description: "Image updated successfully"
        
       })
-
       getData();
-
-     
-
+      setLoadingUpdate(false)
     }catch(error: any){
       toast({
         variant: "destructive",
         title: "Error",
         description: error.message,
       })
+      setLoadingUpdate(false)
     }
   }
 
   useEffect(() => {
     getData();
     
-  })
+  }, [])
   
 
   
@@ -141,57 +143,91 @@ const Profile = () => {
   return (
     <section>
       <div className="flex items-center justify-center w-full h-screen flex-col">
-       <h1 className="mb-5 text-4xl font-bold">
-        { 
-         
-         `${name.charAt(0).toUpperCase()}${name.slice(1)}'s profile `
-        }
-       </h1>
-
-       <div className="flex w-full max-w-sm items-center gap-x-4 my-5">
-
-          {
-            userId ? (
-              userData?.map((item) => (
-              
-                <Avatar className="h-full w-20" key={item?.$id}>
-                   <AvatarImage src={item?.avatar_url} className="object-cover"/>
-                   <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-              ))
-            ): (
-              <Avatar className="h-full w-20">
+      {
+        loadingData ? (
+            <div className="bg-gray-200 w-full h-full flex items-center justify-center">
+              <Oval className="w-20 h-20"/>
+            </div>
+        ):
+        (
+          <div> 
+              <h1 className="mb-5 text-4xl font-bold">
+                { 
                 
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-            )
-           
-          }
-               
-       <div>
-          <Input className="mb-2" id="picture" type="file"  onChange={(e) => handleCahange(e)}/>
-          <div className="flex gap-x-2">
-          {
-            userId ? <Button onClick={updateUserData}>Update</Button> : <Button onClick={sendFile}>Upload</Button>  
-          }
-            
-        
+                `${name.charAt(0).toUpperCase()}${name.slice(1)}'s profile `
+                }
+              </h1>
+
+              <div className="flex w-full max-w-sm items-center gap-x-4 my-5">
+
+                  {
+                    userId ? (
+                      userData?.map((item) => (
+                      
+                        <Avatar className="h-full w-20" key={item?.$id}>
+                          <AvatarImage src={item?.avatar_url} className="object-cover"/>
+                          <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                      ))
+                    ): (
+                      <Avatar className="h-full w-20">
+                        
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                    )
+                  
+                  }
+                      
+              <div>
+                  <Input className="mb-2" id="picture" type="file"  onChange={(e) => handleCahange(e)}/>
+                  <div className="flex gap-x-2">
+                    {
+                      userId ? <Button onClick={updateUserData}>
+                          {
+                            loadingUpdate ? (
+                              <div className="flex items-center justify-center ">
+                                <TailSpin className="w-8 h-5"/>
+                              </div>
+                            ):
+                            (
+                              <span>Update</span>
+                            )
+                          }
+                        
+                        </Button> : <Button onClick={sendFile}>
+                          {
+                            loadingUpdate ? (
+                              <div className="flex items-center justify-center ">
+                                <TailSpin className="w-8 h-5"/>
+                              </div>
+                            ):
+                            (
+                              <span>Upload</span>
+                            )
+                          }
+                        </Button>  
+                    }
+                    
+                  </div>
+              </div>
+
+              </div>
+
+              <div className="border rounded-md p-5 shadow w-[400px]">
+                <label htmlFor="name">
+                  <span className="text-[15px] text-gray-400 mb-1">Name</span>
+                  <Input id="name" type="text" className="mb-5" defaultValue={name}/>
+                </label>
+
+                <label htmlFor="">
+                  <span className="text-[15px] text-gray-400 mb-1">Email</span>
+                  <Input type="email" defaultValue={email}/>
+                </label>
+              
+              </div>
           </div>
-       </div>
-       </div>
-
-       <div className="border rounded-md p-5 shadow w-[400px]">
-        <label htmlFor="name">
-          <span className="text-[15px] text-gray-400 mb-1">Name</span>
-          <Input id="name" type="text" className="mb-5" defaultValue={name}/>
-        </label>
-
-        <label htmlFor="">
-          <span className="text-[15px] text-gray-400 mb-1">Email</span>
-          <Input type="email" defaultValue={email}/>
-        </label>
-       
-       </div>
+        )
+      }
 
       </div>
     </section>
