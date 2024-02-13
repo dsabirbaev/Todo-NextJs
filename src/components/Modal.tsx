@@ -29,23 +29,33 @@ const Modal: FC<IModal> = ({ id }) => {
     const data ={
       text: text
     }
-    try{
-      const response = await DATABASE.updateDocument(DB_ID, COLLECTION_TODOS_ID, id, data)
-
-      toast({
-        title: "Updated todo",
-				description: "Todo was updated successfully"
-       
-      })
-      setLoadingEdit(false);
-    }catch(error: any){
+    if(data.text.trim().length >= 2){
+      try{
+        const response = await DATABASE.updateDocument(DB_ID, COLLECTION_TODOS_ID, id, data)
+  
+        toast({
+          title: "Updated todo",
+          description: "Todo was updated successfully"
+         
+        })
+        setLoadingEdit(false);
+      }catch(error: any){
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error.message,
+        })
+        setLoadingEdit(false);
+      }
+    }else{
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message,
+        description: "Fill the input",
       })
       setLoadingEdit(false);
     }
+    
   }
 
   return (

@@ -43,27 +43,36 @@ const Home = () => {
       text: todoText,
       email: email,
     }
-   
-    try{
-      await DATABASE.createDocument( DB_ID, COLLECTION_TODOS_ID, UNIQUE_ID, data);
-
-      toast({
-        title: "Added todo",
-				description: "Todo was added successfully"
-       
-      })
-      getData();
-      setTodoText("");
-      setLoadingAddTodo(false)
-    }catch(error: any){
+    if(data.text.trim().length >= 2){
+      try{
+        await DATABASE.createDocument( DB_ID, COLLECTION_TODOS_ID, UNIQUE_ID, data);
+  
+        toast({
+          title: "Added todo",
+          description: "Todo was added successfully"
+         
+        })
+        getData();
+        setTodoText("");
+        setLoadingAddTodo(false)
+      }catch(error: any){
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error.message,
+        })
+  
+        setLoadingAddTodo(false)
+      }
+    }else {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message,
+        description: "Fill the input",
       })
-
       setLoadingAddTodo(false)
     }
+    
   }
 
   
