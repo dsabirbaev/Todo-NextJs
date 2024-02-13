@@ -2,6 +2,7 @@
 "use client"
 
 import { useState, useEffect } from "react";
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ACCOUNT, DATABASE, DB_ID, COLLECTION_TODOS_ID, UNIQUE_ID } from "@/lib/appwrite"
 import Todo from "@/components/Todo";
@@ -9,6 +10,8 @@ import { Query } from "appwrite";
 import { useToast } from "@/components/ui/use-toast"
 import { IData, ITodo } from "@/types";
 import { TailSpin, Bars } from 'react-loading-icons'
+import Image from 'next/image';
+import noData from "../../../public/nodata.jpg"
 
 const Home = () => {
 
@@ -127,7 +130,9 @@ const Home = () => {
   return (
     <section className="min-h-screen my-5">
       <div className="container mx-auto">
-          <div className="flex items-center justify-center flex-col">
+        {
+          email ? (
+            <div className="flex items-center justify-center flex-col">
             <h1 className="text-[40px] mb-10">My Daily <span className="font-bold text-pink-500">Task</span></h1>
 
             <div className="flex items-center gap-x-5 flex-col">
@@ -158,15 +163,34 @@ const Home = () => {
                   (
                     <div className="border rounded-md border-pink-300 w-[700px] p-2 flex flex-col gap-y-5">
                       {
-                        [... todos].reverse().map((item, index) => (
-                          <Todo text={item.text} $id={item.$id} index={index+1} key={item?.$id} deleteTodo={deleteTodo}/>
-                        ))
+                        todos.length  ? (
+                          [... todos].reverse().map((item, index) => (
+                            <Todo text={item.text} $id={item.$id} index={index+1} key={item?.$id} deleteTodo={deleteTodo}/>
+                          ))
+                        ): (
+                          <div className="flex items-center justify-center">
+                            <Image src={noData} alt="no - data"/>
+                          </div>
+                        )
                       }
                     </div>
                   )
                 }
             </div>
-          </div>
+            </div>
+          ) :
+          (
+            <div className="flex items-center justify-center h-screen flex-col gap-y-4">
+              <h2 className="font-bold text-2xl">You should login bro :)</h2>
+              <Button variant="destructive" className="text-xl"> 
+                  <Link href={'/login'}>
+                    Login
+                  </Link>
+              </Button>
+            </div>
+          )
+        }
+         
       </div>
     </section>
   );
